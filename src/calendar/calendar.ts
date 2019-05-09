@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, ViewChild  } from '@angular/core';
-import { Slides } from 'ionic-angular';
 import * as moment from 'moment';
 import * as _ from "lodash";
+import { Slides } from 'ionic-angular';
 
 @Component({
     selector: 'ion-calendar',
