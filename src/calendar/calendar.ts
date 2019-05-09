@@ -1,4 +1,5 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild  } from '@angular/core';
+import { Slides } from 'ionic-angular';
 import * as moment from 'moment';
 import * as _ from "lodash";
 
@@ -18,18 +19,20 @@ import * as _ from "lodash";
             </ion-col>
         </ion-row>
 
-        <ion-row>
-            <ion-col class="center calendar-header-col" *ngFor="let head of weekHead">{{head | weekdayName:lang}}</ion-col>
-        </ion-row>
+        <ion-slides  [initialSlide]='currentMonth' #slides (ionSlideDidChange)="slideChanged()">
 
-        <ion-row class="calendar-row" *ngFor="let week of weekArray;let i = index">
-            <ion-col class="center calendar-col" (click)="day.onClick?day.onClick():daySelect(day,i,j)"
-            *ngFor="let day of week;let j = index"
-            [ngClass]="[day.isThisMonth?'this-month':'not-this-month',day.isToday?'today':'',day.isSelect?'select':'',day.hasEvent&&day.eventCSS?day.eventCSS:'']">
-                {{day.date}}
-            </ion-col>
-        </ion-row>
+            <ion-row>
+                <ion-col class="center calendar-header-col" *ngFor="let head of weekHead">{{head | weekdayName:lang}}</ion-col>
+            </ion-row>
 
+            <ion-row class="calendar-row" *ngFor="let week of weekArray;let i = index">
+                <ion-col class="center calendar-col" (click)="day.onClick?day.onClick():daySelect(day,i,j)"
+                *ngFor="let day of week;let j = index"
+                [ngClass]="[day.isThisMonth?'this-month':'not-this-month',day.isToday?'today':'',day.isSelect?'select':'',day.hasEvent&&day.eventCSS?day.eventCSS:'']">
+                    {{day.date}}
+                </ion-col>
+            </ion-row>
+        </ion-slides>
     </ion-grid>
 `
 })
@@ -40,6 +43,7 @@ export class Calendar {
     @Output() onMonthSelect = new EventEmitter<any>();
     @Input() events: Array<singularDate> = [];
     @Input() lang: string;
+    @ViewChild(Slides) slides: Slides;
 
     currentYear: number = moment().year();
     currentMonth: number = moment().month();
@@ -68,6 +72,10 @@ export class Calendar {
       this.createMonth(this.displayYear, this.displayMonth);
     }
 
+    slideChanged(){
+      let activeIndex = this.slides.getActiveIndex();
+      console.log(activeIndex)
+    }
 
     // Jump to today
     today() {
